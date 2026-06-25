@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.env
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+logs/
+*.log
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Cache
+.cache/
+
+# Data
+data/processed/
+data/embeddings/
+
+# Models
+models/
+
+# Testing
+.pytest_cache/
+
+# Docker
+*.pid
+
+# Misc
+*.swp
