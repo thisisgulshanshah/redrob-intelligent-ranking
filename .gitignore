@@ -44,3 +44,6 @@ models/
 
 # Misc
 *.swp
+backend/data/raw/*.jsonl
+backend/data/raw/*.json
+venv/
