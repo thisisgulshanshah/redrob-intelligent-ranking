@@ -33,8 +33,11 @@ dist/
 data/processed/
 data/embeddings/
 
-# Models
-models/
+# Models (ignore trained model artifacts, not our code folder)
+*.pkl
+*.h5
+*.pt
+*.onnx
 
 # Testing
 .pytest_cache/
