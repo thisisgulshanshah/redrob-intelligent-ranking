@@ -1,0 +1,62 @@
+team_name: "Purvanchal AI"
+
+primary_contact:
+  name: "Gulshan Kumar Shah"
+  email: "gulshan.shah_btech25@gsv.ac.in"
+  phone: "+91-7307077723"
+
+team_members:
+  - name: "Gulshan Kumar Shah"
+    email: "gulshan.shah_btech25@gsv.ac.in"
+    role: "Student, B.Tech AI & DS, Gati Shakti Vishwavidyalaya"
+  - name: "Prince Chaudhary"
+    email: "prince_btech25@gsv.ac.in"
+    role: "Student, B.Tech AI & DS, Gati Shakti Vishwavidyalaya"
+
+github_repo: "https://github.com/thisisgulshanshah/redrob-intelligent-ranking"
+
+sandbox_link: ""
+# TODO: fill after Colab setup
+
+reproduce_command: "python backend/ranking/rank.py --candidates backend/data/raw/candidates.jsonl --jd backend/data/raw/job_description.docx --out submissions/submission.csv"
+
+compute:
+  platform: "MacBook Air M4"
+  cpu_cores: 10
+  ram_gb: 16
+  python_version: "3.12.13"
+  os: "macOS 26.5.1"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: false
+  pre_computation_time_minutes: 0
+
+ai_tools_used:
+  - "Claude"
+  - "ChatGPT"
+
+ai_usage_summary: |
+  Used Claude and ChatGPT for architecture discussion, debugging, and code review
+  throughout development. No candidate data was sent to any external LLM API during
+  the actual ranking pipeline run — all candidate processing happens locally,
+  offline, with no network calls.
+
+methodology_summary: |
+  Rule-based ranker combining experience-years fit, career-history evidence
+  (retrieval/ranking/search keywords found in actual job descriptions, not just
+  skills list), product vs. service company detection, skills relevance with
+  proficiency/endorsement weighting, behavioral signal scoring (recruiter response,
+  notice period, activity recency), location, and education tier. A hard
+  honeypot filter excludes 71 dataset-confirmed honeypots (candidates with 3+
+  stacked impossible signal contradictions: last_active before signup, inverted
+  salary range, and unverified-but-high-social-proof). A title-based guard caps
+  scores for non-AI roles (Business Analyst, Sales, etc.) even when their summary
+  text contains AI buzzwords, directly addressing the JD's warning that keyword
+  matching is a trap. Runtime ~well under 5 min for 100K candidates on CPU.
+
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true
