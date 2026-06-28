@@ -252,7 +252,7 @@ class CandidateScorer:
         breakdown.honeypot_penalty = self._honeypot_penalty(candidate, profile, history, skills, signals, experience)
 
         total = breakdown.total()
-        total = max(0.0, min(100.0, total))
+        total = max(0.0, total)
         total = round(total, 6)
 
         diagnostics = {
