@@ -42,8 +42,10 @@ LOCATION_BONUS = {
 }
 
 ENGINEERING_TITLES = {
-    "engineer", "scientist", "data", "ml", "ai", "search", "ranking", "recommender",
-    "backend", "platform", "machine learning", "applied ml", "analytics engineer",
+    "ml engineer", "machine learning engineer", "ai engineer", "applied scientist",
+    "data scientist", "nlp engineer", "search engineer", "ranking engineer",
+    "recommendation", "recommender", "applied ml", "ai research engineer",
+    "research engineer", "computer vision engineer",
 }
 
 NEGATIVE_TITLES = {
