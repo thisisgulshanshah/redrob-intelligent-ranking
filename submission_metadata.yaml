@@ -15,7 +15,7 @@ team_members:
 
 github_repo: "https://github.com/thisisgulshanshah/redrob-intelligent-ranking"
 
-sandbox_link: "PASTE_YOUR_COLAB_LINK_HERE"
+sandbox_link: "https://colab.research.google.com/drive/1PohlRX-DZsmDTtmOeImEHlRSNf6OUjlw?usp=sharing"
 # TODO: fill after Colab setup
 
 reproduce_command: "python backend/ranking/rank.py --candidates backend/data/raw/candidates.jsonl --jd backend/data/raw/job_description.docx --out submissions/submission.csv"
