@@ -41,20 +41,54 @@ LOCATION_BONUS = {
     "bangalore": 1.5,
 }
 
+
+
 ENGINEERING_TITLES = {
-    "ml engineer", "machine learning engineer", "ai engineer", "applied scientist",
-    "data scientist", "nlp engineer", "search engineer", "ranking engineer",
-    "recommendation", "recommender", "applied ml", "ai research engineer",
-    "research engineer", "computer vision engineer",
+    "ai specialist", "ai research engineer", "data scientist", "ml engineer",
+    "computer vision engineer", "nlp engineer", "ai engineer", "machine learning engineer",
+    "recommendation systems", "applied ml engineer", "mlops engineer",
+    "ml infrastructure engineer", "deep learning engineer", "research scientist",
+    "applied scientist", "search engineer", "ranking engineer", "relevance",
+    "information retrieval", "personalization engineer",
+    "ai platform engineer", "genai engineer", "llm engineer", "nlp scientist",
+    "computer vision scientist", "knowledge graph engineer", "ai infrastructure engineer",
+    "ml research engineer",
 }
 
+# Off-domain titles only. Generic titles (Software Engineer, Data Engineer, Backend
+# Engineer, Analytics Engineer) deliberately excluded — too ambiguous to penalize on
+# title alone; career_history/skills/jd_fit scoring decides those cases instead.
 NEGATIVE_TITLES = {
-    "marketing", "sales", "accountant", "customer support", "operations manager",
-    "project manager", "hr", "civil engineer", "mechanical engineer",
-    "business analyst", "content writer", "content writing", "executive",
-    "recruiter", "teacher", "lecturer", "designer", "graphic design",
-    "finance", "legal", "lawyer", "supply chain", "logistics", "procurement",
+    "business analyst", "mechanical engineer", "marketing manager", "project manager",
+    "hr manager", "operations manager", "accountant", "content writer", "civil engineer",
+    "customer support", "graphic designer", "sales executive", "devops engineer",
+    "cloud engineer", "full stack developer", ".net developer", "java developer",
+    "frontend engineer", "qa engineer", "mobile developer", "recruiter", "teacher",
+    "lecturer", "finance manager", "legal counsel", "supply chain manager",
+    "logistics manager", "procurement manager", "product manager", "ui designer",
+    "ux designer", "network engineer", "system administrator", "database administrator",
+    "site reliability engineer", "solutions architect", "technical writer", "scrum master",
+    "quality analyst", "embedded engineer", "hardware engineer", "electrical engineer",
+    "sales engineer", "customer success manager", "social media manager", "seo specialist",
+    "financial analyst", "investment banker",
 }
+
+import re as _re
+
+_SYNONYM_MAP = [
+    (_re.compile(r"\(ml\)"), "ml engineer"), (_re.compile(r"\(ai\)"), "ai engineer"),
+    (_re.compile(r"\bmachine learning\b"), "ml"), (_re.compile(r"\bnatural language processing\b"), "nlp"),
+    (_re.compile(r"\bartificial intelligence\b"), "ai"), (_re.compile(r"\brecommender\b"), "recommendation"),
+    (_re.compile(r"\bcv engineer\b"), "computer vision engineer"),
+    (_re.compile(r"\bsearch relevance\b"), "relevance"), (_re.compile(r"\binfo retrieval\b"), "information retrieval"),
+    (_re.compile(r"\bgenerative ai\b"), "genai"), (_re.compile(r"\blarge language model\b"), "llm"),
+]
+
+def _normalize_for_title_match(title: str) -> str:
+    t = title.lower().strip()
+    for pattern, canonical in _SYNONYM_MAP:
+        t = pattern.sub(canonical, t)
+    return t
 
 
 def _normalize_text(value: Any) -> str:
@@ -330,7 +364,7 @@ class CandidateScorer:
         if engineering_evidence:
             score += min(8.0, engineering_evidence * 1.0)
 
-        current_title = _normalize_text(profile.get("current_title"))
+        current_title = _normalize_for_title_match(profile.get("current_title") or "")
         if any(term in current_title for term in ENGINEERING_TITLES):
             score += 6.0
 
