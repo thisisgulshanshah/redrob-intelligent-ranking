@@ -7,9 +7,19 @@ from typing import Any, Dict, List, Sequence, Tuple
 
 
 PRODUCT_COMPANIES = {
-    "google", "microsoft", "amazon", "meta", "apple", "netflix", "uber", "ola",
-    "swiggy", "zomato", "razorpay", "pied piper", "acme corp", "hooli", "globex inc",
-    "wayve", "bytedance", "spotify", "airbnb", "stripe", "shopify",
+    "google", "microsoft", "amazon", "meta", "apple", "netflix", "uber",
+    "bytedance", "spotify", "airbnb", "stripe", "shopify", "adobe",
+    "ola", "swiggy", "zomato", "razorpay", "cred", "flipkart", "phonepe",
+    "paytm", "nykaa", "meesho", "dream11", "freshworks", "zoho", "inmobi",
+    "policybazaar", "pharmeasy", "upgrad", "unacademy", "byju's", "vedantu",
+    "glance", "haptik", "yellow.ai", "sarvam ai", "krutrim", "observe.ai",
+    "wysa", "niramai", "rephrase.ai", "mad street den", "saarthi.ai",
+    "aganitha", "verloop.io", "locobuzz",
+}
+
+FICTIONAL_COMPANIES = {
+    "initech", "stark industries", "dunder mifflin", "wayne enterprises",
+    "pied piper", "acme corp", "hooli", "globex inc",
 }
 
 SERVICE_COMPANIES = {
@@ -22,6 +32,15 @@ RETRIEVAL_TERMS = {
     "embeddings", "faiss", "qdrant", "milvus", "weaviate", "pinecone",
     "elasticsearch", "opensearch", "bm25", "ndcg", "mrr", "map", "learning to rank",
     "ltr", "sentence-transformers", "bge", "e5", "rag", "llm", "fine-tuning",
+    "collaborative filtering", "matrix factorization", "re-rank", "rerank",
+    "semantic search", "query expansion", "query understanding", "dense retrieval",
+    "sparse retrieval", "hybrid search", "lexical search", "hnsw", "ann",
+    "two tower", "dual encoder", "bi-encoder", "cross encoder", "colbert",
+    "candidate generation", "item2vec", "word2vec", "doc2vec",
+    "click-through", "ctr prediction", "pairwise", "listwise", "pointwise",
+    "contrastive learning", "triplet loss", "siamese network",
+    "passage retrieval", "contextual retrieval", "chunk retrieval",
+    "sentence transformer", "huggingface",
 }
 
 TECH_TERMS = {
@@ -248,6 +267,8 @@ def _company_bucket(company: str) -> str:
         return "product"
     if c in SERVICE_COMPANIES:
         return "service"
+    if c in FICTIONAL_COMPANIES:
+        return "fictional"
     return "unknown"
 
 
@@ -341,12 +362,15 @@ class CandidateScorer:
                 score += 4.0
             elif bucket == "service":
                 score += 0.5
+            elif bucket == "fictional":
+                score -= 3.0
 
             for term in ("product", "user", "users", "feature", "shipping", "launched", "launch", "experiment", "a/b", "revenue"):
                 if term in desc:
                     product_evidence += 1
+            desc_norm = desc.replace("re-ranking", "rerank").replace("re-rank", "rerank").replace("collaborative filter", "collaborative filtering").replace("matrix factorisation", "matrix factorization")
             for term in RETRIEVAL_TERMS:
-                if term in desc or term in title:
+                if term in desc_norm or term in title:
                     retrieval_evidence += 1
             for term in ("production", "deployed", "monitoring", "evaluation", "offline", "benchmark", "scale", "real-time", "search"):
                 if term in desc:
