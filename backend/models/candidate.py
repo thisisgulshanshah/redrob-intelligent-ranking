@@ -9,20 +9,25 @@ class Candidate:
 
     @property
     def profile(self) -> dict:
-        return self.data.get("profile", {})
+        value = self.data.get("profile", {})
+        return value if isinstance(value, dict) else {}
 
     @property
     def skills(self) -> list:
-        return self.data.get("skills", [])
+        value = self.data.get("skills", [])
+        return value if isinstance(value, list) else []
 
     @property
     def career_history(self) -> list:
-        return self.data.get("career_history", [])
+        value = self.data.get("career_history", [])
+        return value if isinstance(value, list) else []
 
     @property
     def education(self) -> list:
-        return self.data.get("education", [])
+        value = self.data.get("education", [])
+        return value if isinstance(value, list) else []
 
     @property
     def redrob_signals(self) -> dict:
-        return self.data.get("redrob_signals", {})
+        value = self.data.get("redrob_signals", {})
+        return value if isinstance(value, dict) else {}

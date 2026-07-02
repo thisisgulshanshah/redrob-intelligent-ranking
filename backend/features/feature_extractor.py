@@ -42,9 +42,17 @@ class FeatureExtractor:
         education = candidate.education
         signals = candidate.redrob_signals
 
-        skill_names = [x["name"].lower() for x in skills]
+        skill_names = [
+            str(x.get("name") or "").lower()
+            for x in skills
+            if isinstance(x, dict)
+        ]
 
-        companies = [x["company"] for x in history]
+        companies = [
+            str(x.get("company") or "")
+            for x in history
+            if isinstance(x, dict)
+        ]
 
         features = {}
 

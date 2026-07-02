@@ -4,6 +4,7 @@ import argparse
 import csv
 import heapq
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Tuple
 
@@ -17,8 +18,16 @@ from backend.ranking.scorer import CandidateScorer
 from backend.ranking.honeypot import is_honeypot
 
 
-def _invert_candidate_id(candidate_id: str) -> str:
-    return "".join(chr(255 - ord(ch)) for ch in candidate_id)
+@dataclass(frozen=True)
+class _HeapTieBreaker:
+    """Keep lower candidate IDs when scores tie in the top-100 heap."""
+
+    candidate_id: str
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, _HeapTieBreaker):
+            return NotImplemented
+        return self.candidate_id > other.candidate_id
 
 
 def _load_jd_text(jd_path: str | Path) -> str:
@@ -40,7 +49,14 @@ def _load_jd_text(jd_path: str | Path) -> str:
             ) from exc
 
         doc = Document(str(path))
-        return "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+        chunks = [p.text for p in doc.paragraphs if p.text.strip()]
+        for table in doc.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    text = cell.text.strip()
+                    if text:
+                        chunks.append(text)
+        return "\n".join(chunks)
 
     return path.read_text(encoding="utf-8", errors="ignore")
 
@@ -49,7 +65,7 @@ def _top_100_stream(candidates_path: str, jd_text: str) -> List[Tuple[float, str
     extractor = FeatureExtractor()
     scorer = CandidateScorer()
 
-    heap: List[Tuple[float, str, str, str]] = []
+    heap: List[Tuple[float, _HeapTieBreaker, str, str]] = []
 
     skipped_honeypots = 0
     for idx, candidate in enumerate(CandidateLoader.load(candidates_path), start=1):
@@ -61,7 +77,7 @@ def _top_100_stream(candidates_path: str, jd_text: str) -> List[Tuple[float, str
         reasoning = build_reasoning(candidate, score, diagnostics)
 
         candidate_id = getattr(candidate, "candidate_id")
-        item = (float(score), _invert_candidate_id(candidate_id), candidate_id, reasoning)
+        item = (float(score), _HeapTieBreaker(candidate_id), candidate_id, reasoning)
 
         if len(heap) < 100:
             heapq.heappush(heap, item)
